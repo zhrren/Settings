@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("Settings")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Mark.Settings")]
+[assembly: AssemblyDescription("应用程序配置模块")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Settings")]
+[assembly: AssemblyProduct("Mark.Settings")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
