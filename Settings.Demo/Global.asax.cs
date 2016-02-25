@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Settings.Demo.Base;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Settings.Demo
 
         private void _settings_Changed(object sender, EventArgs e)
         {
-            Apps.Settings = _settings.Renew<Settings>();
+            Apps.Settings = _settings.Renew<Settings.Demo.Base.Settings>();
             log4net.Config.XmlConfigurator.ConfigureAndWatch(new FileInfo(_settings.Combine("log4net.config")));
         }
 

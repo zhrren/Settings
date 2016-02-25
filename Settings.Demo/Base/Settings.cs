@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Settings.Demo
+namespace Settings.Demo.Base
 {
     public class Settings
     {
