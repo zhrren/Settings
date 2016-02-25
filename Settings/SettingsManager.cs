@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Mark.Settings
 {
-    public class SettingsManager
+    public class SettingsManager<T>
     {
         private string _rootPath;
         private SettingsWatcher _watcher;
@@ -28,7 +28,7 @@ namespace Mark.Settings
             if (Changed != null) Changed(this, EventArgs.Empty);
         }
 
-        public T Renew<T>()
+        public T Renew()
         {
             lock (this)
             {

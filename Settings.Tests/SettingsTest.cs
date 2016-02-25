@@ -11,9 +11,9 @@ namespace Settings.Tests
         [TestInitialize]
         public void Initialize()
         {
-            Mark.Settings.SettingsManager manager = new Mark.Settings.SettingsManager();
+            Mark.Settings.SettingsManager<Settings> manager = new Mark.Settings.SettingsManager<Settings>();
             manager.Changed += Manager_Changed;
-            Settings= manager.Renew<Settings>();
+            Settings= manager.Renew();
         }
 
         private void Manager_Changed(object sender, EventArgs e)
