@@ -28,11 +28,11 @@ namespace Mark.Settings
             if (Changed != null) Changed(this, EventArgs.Empty);
         }
 
-        public T Renew()
+        public T Renew(string filename = "app.json")
         {
             lock (this)
             {
-                var settingsPath = Combine("app.json");
+                var settingsPath = Combine(filename);
                 return JsonMapper.ToObject<T>(File.ReadAllText(settingsPath));
             }
         }
