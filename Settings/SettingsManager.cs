@@ -56,6 +56,11 @@ namespace Mark.Settings
             return Path.Combine(_rootPath, newfilename);
         }
 
+        public string Map(string filename)
+        {
+            return Path.Combine(_rootPath, filename);
+        }
+
         public event EventHandler Changed;
     }
 }
