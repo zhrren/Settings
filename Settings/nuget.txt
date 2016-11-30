@@ -1,2 +1,0 @@
-﻿nuget pack Settings.csproj -Prop Configuration=Release
-nuget push Mark.Settings.2.1.0.0.nupkg

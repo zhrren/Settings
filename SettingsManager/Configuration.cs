@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Runtime.Serialization;
 
-namespace Mark.Settings
+namespace Mark.SettingsManager
 {
     internal class Configuration
     {
-        public string Mode { get; set; }
+        public string Env { get; set; }
     }
 }
