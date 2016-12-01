@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Mark.SettingsManager
+namespace Mark.SettingsContext
 {
     internal class Configuration
     {
