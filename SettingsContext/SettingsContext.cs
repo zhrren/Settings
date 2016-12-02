@@ -8,11 +8,16 @@ using System.Text;
 
 namespace Mark.SettingsContext
 {
-    public class SettingsContext
+    public class SettingsContext : IDisposable
     {
+        public static SettingsContext DEFAULT = new SettingsContext();
+
         private string _rootPath;
         private string _settingsFilePath;
         private dynamic _data;
+        private Mark.FileWatcher.FileWatcher _settingsWatcher;
+        private Mark.FileWatcher.FileWatcher _envWatcher;
+        private event Action _changed;
 
         public string Env { get; private set; }
 
@@ -29,11 +34,7 @@ namespace Mark.SettingsContext
             }
         }
 
-        public SettingsContext(string filename = "app.json", string settingsPath = "settings") :
-            this(null, filename, settingsPath)
-        { }
-
-        public SettingsContext(Action renewHandler, string filename = "app.json", string settingsPath = "settings")
+        public SettingsContext(string filename = "app.json", string settingsPath = "settings")
         {
             if (string.IsNullOrWhiteSpace(filename))
                 throw new ArgumentNullException("filename");
@@ -53,19 +54,34 @@ namespace Mark.SettingsContext
             var configPath = Path.Combine(_rootPath, "app.json");
             if (File.Exists(configPath))
             {
-                var content = File.ReadAllText(configPath);
-                var config = JsonConvert.DeserializeObject<Configuration>(content);
-                Env = config.Env;
+                _envWatcher = new FileWatcher.FileWatcher(configPath);
+                _envWatcher.AddChangedListener(envWatcher_Changed, true);
             }
 
-            FileWatcherManager.Watch(_rootPath, (args) =>
+        }
+        private void envWatcher_Changed(FileSystemEventArgs e)
+        {
+            var content = File.ReadAllText(e.FullPath);
+            var config = JsonConvert.DeserializeObject<Configuration>(content);
+            Env = config.Env;
+
+            if (_settingsWatcher != null)
             {
-                lock (this)
-                {
-                    _data = null;
-                }
-                renewHandler?.Invoke();
-            }, true);
+                _settingsWatcher.Dispose();
+            }
+
+            var settingsPath = Combine(_settingsFilePath);
+            _settingsWatcher = new Mark.FileWatcher.FileWatcher(settingsPath);
+            _settingsWatcher.AddChangedListener(settingsWatcher, true);
+        }
+
+        private void settingsWatcher(FileSystemEventArgs e)
+        {
+            lock (this)
+            {
+                _data = null;
+            }
+            _changed?.Invoke();
         }
 
         public string Combine(string filename)
@@ -108,5 +124,31 @@ namespace Mark.SettingsContext
                 return JsonConvert.DeserializeObject<T>(content);
             }
         }
+
+        public void Dispose()
+        {
+            if (_envWatcher != null)
+            {
+                _envWatcher.Changed -= envWatcher_Changed;
+                _envWatcher.Dispose();
+                _envWatcher = null;
+            }
+            if (_settingsWatcher != null)
+            {
+                _settingsWatcher.Changed -= settingsWatcher;
+                _settingsWatcher.Dispose();
+                _settingsWatcher = null;
+            }
+            _changed = null;
+        }
+
+        public void AddChangedListener(Action listener, bool immediate = false)
+        {
+            Changed += listener;
+            if (immediate)
+                listener();
+        }
+
+        public event Action Changed;
     }
 }

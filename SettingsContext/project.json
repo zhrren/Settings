@@ -1,6 +1,6 @@
 {
   "name": "Mark.SettingsContext",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "frameworks": {
     "net46": {
       "dependencies": {
@@ -18,7 +18,7 @@
     "centos.7-x64": {}
   },
   "dependencies": {
-    "Mark.FileWatcher": "2.0.0",
+    "Mark.FileWatcher": "2.3.0",
     "Newtonsoft.Json": "9.0.1",
     "System.IO.FileSystem.Watcher": "4.3.0"
   }
