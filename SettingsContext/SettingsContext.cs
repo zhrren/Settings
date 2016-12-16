@@ -16,10 +16,17 @@ namespace Mark.SettingsContext
         private string _settingsFilePath;
         private dynamic _data;
         private Mark.FileWatcher.FileWatcher _settingsWatcher;
-        private Mark.FileWatcher.FileWatcher _envWatcher;
+        private Mark.FileWatcher.FileWatcher _hostingWatcher;
         private event Action _changed;
 
-        public string Env { get; private set; }
+        public Hosting Hosting { get; private set; }
+
+        public string Env { get { return Hosting.Env; } }
+
+        public bool IsDevelopment
+        {
+            get { return Hosting.IsDevelopment(); }
+        }
 
         public dynamic Data
         {
@@ -34,36 +41,33 @@ namespace Mark.SettingsContext
             }
         }
 
-        public SettingsContext(string filename = "app.json", string settingsPath = "settings")
+        public SettingsContext(string settingsFileName = "app.json", string settingsPath = "settings")
         {
-            if (string.IsNullOrWhiteSpace(filename))
+            if (string.IsNullOrWhiteSpace(settingsFileName))
                 throw new ArgumentNullException("filename");
 
             if (string.IsNullOrWhiteSpace(settingsPath))
                 throw new ArgumentNullException("settingsPath");
 
-            _settingsFilePath = filename;
+            _settingsFilePath = settingsFileName;
 
             if (Path.IsPathRooted(settingsPath))
                 _rootPath = settingsPath;
             else
                 _rootPath = Path.Combine(AppContext.BaseDirectory, settingsPath);
-
-            Env = "development";
-
-            var configPath = Path.Combine(_rootPath, "app.json");
-            if (File.Exists(configPath))
+            
+            var hostingPath = Path.Combine(_rootPath, "hosting.json");
+            if (File.Exists(hostingPath))
             {
-                _envWatcher = new FileWatcher.FileWatcher(configPath);
-                _envWatcher.AddChangedListener(envWatcher_Changed, true);
+                _hostingWatcher = new FileWatcher.FileWatcher(hostingPath);
+                _hostingWatcher.AddChangedListener(hostingWatcher_Changed, true);
             }
 
         }
-        private void envWatcher_Changed(FileSystemEventArgs e)
+        private void hostingWatcher_Changed(FileSystemEventArgs e)
         {
             var content = File.ReadAllText(e.FullPath);
-            var config = JsonConvert.DeserializeObject<Configuration>(content);
-            Env = config.Env;
+            Hosting = JsonConvert.DeserializeObject<Hosting>(content);
 
             if (_settingsWatcher != null)
             {
@@ -93,7 +97,7 @@ namespace Mark.SettingsContext
             if (filenames.Length != 2)
                 throw new ArgumentException("filename");
 
-            var newfilename = string.Format("{0}.{1}.{2}", filenames[0], Env, filenames[1]);
+            var newfilename = string.Format("{0}.{1}.{2}", filenames[0], Hosting.Env, filenames[1]);
             return Path.Combine(_rootPath, newfilename);
         }
 
@@ -127,11 +131,11 @@ namespace Mark.SettingsContext
 
         public void Dispose()
         {
-            if (_envWatcher != null)
+            if (_hostingWatcher != null)
             {
-                _envWatcher.Changed -= envWatcher_Changed;
-                _envWatcher.Dispose();
-                _envWatcher = null;
+                _hostingWatcher.Changed -= hostingWatcher_Changed;
+                _hostingWatcher.Dispose();
+                _hostingWatcher = null;
             }
             if (_settingsWatcher != null)
             {

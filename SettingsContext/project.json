@@ -1,6 +1,6 @@
 {
   "name": "Mark.SettingsContext",
-  "version": "3.7.0",
+  "version": "3.9.0",
   "frameworks": {
     "net46": {
       "dependencies": {
