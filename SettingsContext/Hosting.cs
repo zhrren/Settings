@@ -7,17 +7,22 @@ namespace Mark.SettingsContext
 {
     public class Hosting
     {
-        private string _env;
+        private string _environmentName;
 
-        public string Env
+        public Hosting()
         {
-            get { return _env; }
-            set { _env = string.IsNullOrWhiteSpace(value) ? "development" : value; }
+            _environmentName = "Development";
+        }
+
+        public string EnvironmentName
+        {
+            get { return _environmentName; }
+            set { _environmentName = string.IsNullOrWhiteSpace(value) ? "Development" : value; }
         }
 
         public bool IsDevelopment()
         {
-            return string.Equals("development", Env, StringComparison.OrdinalIgnoreCase);
+            return string.Equals("Development", EnvironmentName, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

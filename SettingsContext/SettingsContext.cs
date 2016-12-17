@@ -21,13 +21,6 @@ namespace Mark.SettingsContext
 
         public Hosting Hosting { get; private set; }
 
-        public string Env { get { return Hosting.Env; } }
-
-        public bool IsDevelopment
-        {
-            get { return Hosting.IsDevelopment(); }
-        }
-
         public dynamic Data
         {
             get
@@ -55,12 +48,19 @@ namespace Mark.SettingsContext
                 _rootPath = settingsPath;
             else
                 _rootPath = Path.Combine(AppContext.BaseDirectory, settingsPath);
-            
+
             var hostingPath = Path.Combine(_rootPath, "hosting.json");
             if (File.Exists(hostingPath))
             {
                 _hostingWatcher = new FileWatcher.FileWatcher(hostingPath);
                 _hostingWatcher.AddChangedListener(hostingWatcher_Changed, true);
+            }
+            else
+            {
+                Hosting = new Hosting();
+                var settingsFilePath = Combine(_settingsFilePath);
+                _settingsWatcher = new Mark.FileWatcher.FileWatcher(settingsFilePath);
+                _settingsWatcher.AddChangedListener(settingsWatcher, true);
             }
 
         }
@@ -68,6 +68,9 @@ namespace Mark.SettingsContext
         {
             var content = File.ReadAllText(e.FullPath);
             Hosting = JsonConvert.DeserializeObject<Hosting>(content);
+
+            if (Hosting == null)
+                throw new ArgumentException("Settings file invalid: " + e.FullPath);
 
             if (_settingsWatcher != null)
             {
@@ -85,7 +88,9 @@ namespace Mark.SettingsContext
             {
                 _data = null;
             }
-            _changed?.Invoke();
+
+            if (_changed != null)
+                _changed();
         }
 
         public string Combine(string filename)
@@ -97,7 +102,7 @@ namespace Mark.SettingsContext
             if (filenames.Length != 2)
                 throw new ArgumentException("filename");
 
-            var newfilename = string.Format("{0}.{1}.{2}", filenames[0], Hosting.Env, filenames[1]);
+            var newfilename = string.Format("{0}.{1}.{2}", filenames[0], Hosting.EnvironmentName.ToLower(), filenames[1]);
             return Path.Combine(_rootPath, newfilename);
         }
 
@@ -111,22 +116,16 @@ namespace Mark.SettingsContext
 
         public dynamic Renew()
         {
-            lock (_settingsFilePath)
-            {
-                var settingsPath = Combine(_settingsFilePath);
-                var content = File.ReadAllText(settingsPath);
-                return JsonConvert.DeserializeObject(content);
-            }
+            var settingsPath = Combine(_settingsFilePath);
+            var content = File.ReadAllText(settingsPath);
+            return JsonConvert.DeserializeObject(content);
         }
 
         public T Renew<T>()
         {
-            lock (_settingsFilePath)
-            {
-                var settingsPath = Combine(_settingsFilePath);
-                var content = File.ReadAllText(settingsPath);
-                return JsonConvert.DeserializeObject<T>(content);
-            }
+            var settingsPath = Combine(_settingsFilePath);
+            var content = File.ReadAllText(settingsPath);
+            return JsonConvert.DeserializeObject<T>(content);
         }
 
         public void Dispose()
