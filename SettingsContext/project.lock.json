@@ -3,7 +3,7 @@
   "version": 2,
   "targets": {
     ".NETFramework,Version=v4.6": {
-      "Mark.FileWatcher/2.3.1": {
+      "Mark.FileWatcher/2.3.2": {
         "type": "package",
         "dependencies": {
           "System.IO.FileSystem.Watcher": "4.3.0"
@@ -53,7 +53,7 @@
       }
     },
     ".NETFramework,Version=v4.6/centos.7-x64": {
-      "Mark.FileWatcher/2.3.1": {
+      "Mark.FileWatcher/2.3.2": {
         "type": "package",
         "dependencies": {
           "System.IO.FileSystem.Watcher": "4.3.0"
@@ -89,7 +89,7 @@
       }
     },
     ".NETFramework,Version=v4.6/win": {
-      "Mark.FileWatcher/2.3.1": {
+      "Mark.FileWatcher/2.3.2": {
         "type": "package",
         "dependencies": {
           "System.IO.FileSystem.Watcher": "4.3.0"
@@ -125,7 +125,7 @@
       }
     },
     ".NETStandard,Version=v1.6": {
-      "Mark.FileWatcher/2.3.1": {
+      "Mark.FileWatcher/2.3.2": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
@@ -1376,7 +1376,7 @@
       }
     },
     ".NETStandard,Version=v1.6/centos.7-x64": {
-      "Mark.FileWatcher/2.3.1": {
+      "Mark.FileWatcher/2.3.2": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
@@ -3055,7 +3055,7 @@
       }
     },
     ".NETStandard,Version=v1.6/win": {
-      "Mark.FileWatcher/2.3.1": {
+      "Mark.FileWatcher/2.3.2": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
@@ -4623,12 +4623,12 @@
     }
   },
   "libraries": {
-    "Mark.FileWatcher/2.3.1": {
-      "sha512": "A+ViZgph5vI5sSAWG6uz7uBkcXfKnneZ33FxUk1gPzM4cSEGf6a3r/DvRotP4ZHXEqhZ1VU5IULCXwEpga4fCQ==",
+    "Mark.FileWatcher/2.3.2": {
+      "sha512": "O86QLuTUtI8l74D+JeZ24gyP9u6croTM/EIcnVPcG3sn2l53cd4hfonpQZ+Z0pjFYeyWk34Zpi39q/42Brv8Ww==",
       "type": "package",
-      "path": "Mark.FileWatcher/2.3.1",
+      "path": "Mark.FileWatcher/2.3.2",
       "files": [
-        "Mark.FileWatcher.2.3.1.nupkg.sha512",
+        "Mark.FileWatcher.2.3.2.nupkg.sha512",
         "Mark.FileWatcher.nuspec",
         "lib/net46/Mark.FileWatcher.dll",
         "lib/net46/Mark.FileWatcher.pdb",
@@ -9160,7 +9160,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "Mark.FileWatcher >= 2.3.1",
+      "Mark.FileWatcher >= 2.3.2",
       "Newtonsoft.Json >= 9.0.1",
       "System.IO.FileSystem.Watcher >= 4.3.0"
     ],
