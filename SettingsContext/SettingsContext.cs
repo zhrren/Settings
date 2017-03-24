@@ -13,25 +13,11 @@ namespace Mark.SettingsContext
 
         private string _rootPath;
         private string _settingsFilePath;
-        private dynamic _data;
         private Mark.FileWatcher.FileWatcher _settingsWatcher;
         private Mark.FileWatcher.FileWatcher _hostingWatcher;
         private event Action _changed;
 
         public Hosting Hosting { get; private set; }
-
-        public dynamic Data
-        {
-            get
-            {
-                if (_data == null)
-                    lock (this)
-                    {
-                        _data = Renew();
-                    }
-                return _data;
-            }
-        }
 
         public SettingsContext(string settingsFileName = "app.json", string settingsPath = "settings")
         {
@@ -46,7 +32,7 @@ namespace Mark.SettingsContext
             if (Path.IsPathRooted(settingsPath))
                 _rootPath = settingsPath;
             else
-                _rootPath = Path.Combine(AppContext.BaseDirectory, settingsPath);
+                _rootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, settingsPath);
 
             var hostingPath = Path.Combine(_rootPath, "hosting.json");
             if (File.Exists(hostingPath))
@@ -83,11 +69,6 @@ namespace Mark.SettingsContext
 
         private void settingsWatcher(FileSystemEventArgs e)
         {
-            lock (this)
-            {
-                _data = null;
-            }
-
             if (_changed != null)
                 _changed();
         }
@@ -111,13 +92,6 @@ namespace Mark.SettingsContext
                 throw new ArgumentNullException(filename);
 
             return Path.Combine(_rootPath, filename);
-        }
-
-        public dynamic Renew()
-        {
-            var settingsPath = Combine(_settingsFilePath);
-            var content = File.ReadAllText(settingsPath);
-            return JsonConvert.DeserializeObject(content);
         }
 
         public T Renew<T>()
@@ -144,13 +118,11 @@ namespace Mark.SettingsContext
             _changed = null;
         }
 
-        public void AddChangedListener(Action listener, bool immediate = false)
+        public void AddListener(Action listener, bool immediate = false)
         {
-            Changed += listener;
+            _changed += listener;
             if (immediate)
                 listener();
         }
-
-        public event Action Changed;
     }
 }
